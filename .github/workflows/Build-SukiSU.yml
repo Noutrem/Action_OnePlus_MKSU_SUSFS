@@ -126,10 +126,24 @@ jobs:
           git config --global user.name "Numbersf"
           git config --global user.email "263623064@qq.com"
 
-      - name: Install dependencies
+            - name: Prepare build environment
         run: |
-          sudo apt update && sudo apt upgrade -y
-          sudo apt install -y python3 git curl
+          echo "⚙️ Fixing DNS..."
+          echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
+          echo "nameserver 1.1.1.1" | sudo tee -a /etc/resolv.conf > /dev/null
+
+          echo "🧹 Removing broken Microsoft repos..."
+          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list || true
+          sudo rm -f /etc/apt/sources.list.d/azure-cli.list || true
+
+          echo "📦 Updating system..."
+          sudo apt update --fix-missing -o Acquire::Retries=3
+          sudo apt upgrade -y --fix-missing
+
+          echo "🔧 Installing dependencies..."
+          sudo apt install -y --no-install-recommends \
+            python3 python3-pip git curl wget unzip bc build-essential flex bison \
+            libssl-dev libncurses5-dev libncursesw5-dev zstd ccache
 
       - name: Show selected inputs debug
         run: |
