@@ -126,7 +126,7 @@ jobs:
           git config --global user.name "Numbersf"
           git config --global user.email "263623064@qq.com"
 
-            - name: Prepare build environment
+      - name: Prepare build environment
         run: |
           echo "⚙️ Fixing DNS..."
           echo "nameserver 8.8.8.8" | sudo tee /etc/resolv.conf > /dev/null
